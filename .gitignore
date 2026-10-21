@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Claude Code (includes skills and commands)
+.claude/
+
+# OpenSpec
+openspec/
+
+# OS
+.DS_Store
+Thumbs.db

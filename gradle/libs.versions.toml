@@ -1,0 +1,9 @@
+[versions]
+karate = "1.4.1"
+junit = "5.10.2"
+logback = "1.5.6"
+
+[libraries]
+karate-junit5 = { module = "com.intuit.karate:karate-junit5", version.ref = "karate" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
