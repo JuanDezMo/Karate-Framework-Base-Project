@@ -17,3 +17,8 @@ openspec/
 # OS
 .DS_Store
 Thumbs.db
+
+# Reportes generados por el pipeline local (ci/)
+ci/reports/*
+!ci/reports/.gitkeep
+ci/.env

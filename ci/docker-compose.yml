@@ -1,0 +1,23 @@
+# Uso: docker compose -f ci/docker-compose.yml up -d --build
+services:
+  jenkins:
+    build: ./jenkins
+    container_name: karate-jenkins
+    ports:
+      - "8080:8080"
+    environment:
+      # Sin asistente de instalación. CSP vacío para que se vea el reporte HTML de Karate en Jenkins.
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dhudson.model.DirectoryBrowserSupport.CSP="
+      JENKINS_ADMIN_ID: ${JENKINS_ADMIN_ID:-admin}
+      JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:-admin}
+      BOOKER_PASSWORD: ${BOOKER_PASSWORD:-password123}
+      GRADLE_USER_HOME: /var/jenkins_home/.gradle
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      # Código del proyecto (solo lectura): el pipeline lo copia a su workspace.
+      - ..:/workspace/project:ro
+      # Reportes fuera del contenedor: ci/reports/<build>/ en tu máquina.
+      - ./reports:/reports
+
+volumes:
+  jenkins_home:

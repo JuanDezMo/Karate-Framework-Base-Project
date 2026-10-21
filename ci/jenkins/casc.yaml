@@ -1,0 +1,39 @@
+jenkins:
+  systemMessage: "Jenkins local para simular el CI/CD de las pruebas Karate"
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              scope: GLOBAL
+              id: "booker-password"
+              description: "Password de la API (se inyecta como BOOKER_PASSWORD)"
+              secret: "${BOOKER_PASSWORD}"
+
+jobs:
+  - script: |
+      pipelineJob('karate-api-tests') {
+        description('Pruebas de API con Karate (componente + integración)')
+        definition {
+          cps {
+            // El Jenkinsfile se lee del proyecto montado en el contenedor.
+            script(new File('/workspace/project/Jenkinsfile').text)
+            sandbox(true)
+          }
+        }
+      }

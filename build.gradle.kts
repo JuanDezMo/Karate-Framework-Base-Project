@@ -26,6 +26,9 @@ dependencies {
 val passthroughProps = listOf("karate.env", "karate.tags", "karate.options", "threads", "baseUrl", "feature")
 val karateReportsDir = layout.buildDirectory.dir("karate-reports").get().asFile.absolutePath
 
+// Cada tipo de prueba escribe su reporte en una subcarpeta propia para que no se sobrescriban.
+fun Test.karateReportsIn(subdir: String) = systemProperty("karate.output.dir", "$karateReportsDir/$subdir")
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 
@@ -49,6 +52,7 @@ val componentTest by tasks.registering(Test::class) {
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
     filter.includeTestsMatching("*ComponentTests")
+    karateReportsIn("component")
 }
 
 // Pruebas de integración: flujos de varios pasos.
@@ -58,4 +62,5 @@ val integrationTest by tasks.registering(Test::class) {
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
     filter.includeTestsMatching("*IntegrationTests")
+    karateReportsIn("integration")
 }
