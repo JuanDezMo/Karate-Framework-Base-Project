@@ -6,30 +6,38 @@ Feature: POST /auth - prueba de componente
     * path 'auth'
     * header Accept = 'application/json'
     * def authSchema = read('classpath:schemas/auth-response.json')
+    * def expected = read('classpath:data/responses/auth/auth.json')
+    * def authErrorSchema = read('classpath:schemas/auth-error-response.json')
+    * def loginRequest = 'classpath:requests/auth/login.json'
 
   @smoke
   Scenario: Credenciales válidas devuelven un token
-    Given request { username: '#(username)', password: '#(password)' }
+    Given request read(loginRequest)
     When method post
-    Then status 200
+    Then match responseStatus == expected.status.ok
     And match response == authSchema
 
   @regression
   Scenario: Password incorrecto es rechazado
-    Given request { username: '#(username)', password: 'password-incorrecto' }
+    * def password = 'password-incorrecto'
+    Given request read(loginRequest)
     When method post
-    Then status 200
-    And match response == { reason: 'Bad credentials' }
+    Then match responseStatus == expected.status.authFailed
+    And match response == authErrorSchema
+    And match response.reason == expected.messages.badCredentials
 
   @regression
   Scenario Outline: Body inválido es rechazado - <caso>
-    Given request <body>
+    * def username = <username>
+    * def password = <password>
+    Given request read(loginRequest)
     When method post
-    Then status 200
-    And match response == { reason: 'Bad credentials' }
+    Then match responseStatus == expected.status.authFailed
+    And match response == authErrorSchema
+    And match response.reason == expected.messages.badCredentials
 
     Examples:
-      | caso               | body                    |
-      | body vacío         | {}                      |
-      | sin password       | { username: 'admin' }   |
-      | sin username       | { password: 'secreto' } |
+      | caso         | username | password  |
+      | body vacío   | null     | null      |
+      | sin password | 'admin'  | null      |
+      | sin username | null     | 'secreto' |
