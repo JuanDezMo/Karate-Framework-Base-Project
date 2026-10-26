@@ -22,3 +22,23 @@ Thumbs.db
 ci/reports/*
 !ci/reports/.gitkeep
 ci/.env
+
+# Variables de entorno / secretos
+.env
+*.env
+
+# Logs y volcados de JVM
+*.log
+hs_err_pid*
+
+# Kotlin / Gradle
+.kotlin/
+
+# Binarios compilados (excepto el wrapper)
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Configuracion local
+local.properties
+*.local
